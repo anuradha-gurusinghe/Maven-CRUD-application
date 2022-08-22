@@ -3,6 +3,7 @@ package com.usermanagement.dao.impl;
 import java.util.List;
 
 import com.usermanagement.dao.UserDao;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class UserDaoImpl implements UserDao {
         this.sessionFactory = sessionFactory;
     }
 
-    private Session getSession() {
+    protected Session getSession() {
         return sessionFactory.getCurrentSession();
     }
 
@@ -29,40 +30,33 @@ public class UserDaoImpl implements UserDao {
     @Override
     public List<User> getAllUser() {
 
-        Session session = this.getSession();
-        List<User> userList = session.createQuery("from User").list();
-        return userList;
+        Criteria criteria = getSession().createCriteria(User.class);
+        return (List) criteria.list();
     }
 
     @Override
     public void updateUser(User user) {
-
-        Session session = this.getSession();
-        session.update(user);
+        getSession().update(user);
     }
 
     @Override
     public void saveUser(User user) {
 
-        Session session = this.getSession();
-        session.persist(user);
+        getSession().persist(user);
     }
 
     @Override
     public void deleteUser(int id) {
-
-        Session session = this.getSession();
-        User user = (User) session.load(User.class, id);
+        User user = (User) getSession().load(User.class, id);
         if (null != user) {
-            session.delete(user);
+            getSession().delete(user);
         }
     }
 
     @Override
     public User getUser(int id) {
 
-        Session session = this.getSession();
-        User user = (User) session.load(User.class, id);
+        User user = (User) getSession().load(User.class, id);
         return user;
     }
 }
