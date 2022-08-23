@@ -1,48 +1,54 @@
 package com.usermanagement.service.impl;
 
 import com.usermanagement.model.User;
-import com.usermanagement.dao.UserDao;
+import com.usermanagement.repository.UserRepository;
 import com.usermanagement.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Transactional
 @Service
 public class UserServiceImpl implements UserService {
 
-    private UserDao userDao;
+    private UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(UserDao userDao) {
-        this.userDao = userDao;
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
+    @Transactional
     public void saveUser(User user) {
-        userDao.saveUser(user);
+        userRepository.save(user);
     }
 
     @Override
-    public void updateUser(User user) {
-        userDao.updateUser(user);
-    }
-
-    @Override
+    @Transactional
     public void deleteUser(int id) {
-        userDao.deleteUser(id);
+        userRepository.deleteById(id);
     }
 
     @Override
-    public User getUser(int id) {
-        return userDao.getUser(id);
-    }
-
-    @Override
+    @Transactional
     public List<User> getAllUser() {
-        return userDao.getAllUser();
+        return userRepository.findAll();
+    }
+
+    @Override
+    @Transactional
+    public void updateUser(User user) {
+        userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public Optional<User> getUser(int id) {
+        return userRepository.findById(id);
     }
 }
 

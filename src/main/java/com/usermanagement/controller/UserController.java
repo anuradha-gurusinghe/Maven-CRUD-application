@@ -1,7 +1,7 @@
 package com.usermanagement.controller;
 
-//package com.usermanagement.controller;
-//
+
+
 //import java.io.IOException;
 //import java.sql.SQLException;
 //import java.util.List;
@@ -153,9 +153,6 @@ public class  UserController {
         this.userService = userService;
 
     }
-
-//    @Autowired
-//    private UserService userService;
 
     @GetMapping("/list")
     public String listUser(Model theModel) {

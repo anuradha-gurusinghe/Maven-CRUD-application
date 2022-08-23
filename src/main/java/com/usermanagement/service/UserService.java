@@ -3,6 +3,7 @@ package com.usermanagement.service;
 import com.usermanagement.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface UserService {
@@ -12,7 +13,7 @@ public interface UserService {
 
     void deleteUser(int id);
 
-    User getUser(int id);
+    Optional<User> getUser(int id);
 
     List<User> getAllUser();
 }

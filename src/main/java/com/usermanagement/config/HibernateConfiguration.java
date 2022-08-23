@@ -8,18 +8,26 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
 import javax.sql.DataSource;
 import java.util.Properties;
+
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
 @EnableTransactionManagement
 @ComponentScan({"com.usermanagement.config"})
 @PropertySources({@PropertySource("classpath:database.properties")})
+
+@ComponentScan({"com.usermanagement"})
+@EnableJpaRepositories(basePackages = "com.usermanagement.repository")
+
 public class HibernateConfiguration {
 
     @Autowired
     private Environment env;
+
+    public HibernateConfiguration() {
+    }
 
     @Bean
     public LocalSessionFactoryBean sessionFactory() {
