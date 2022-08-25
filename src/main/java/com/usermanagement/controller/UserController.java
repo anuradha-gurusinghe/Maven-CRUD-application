@@ -1,5 +1,65 @@
 package com.usermanagement.controller;
 
+import java.util.List;
+import java.util.Optional;
+
+import com.usermanagement.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.usermanagement.service.UserService;
+
+
+@Controller
+@RequestMapping("/")
+public class  UserController {
+
+    private UserService userService;
+
+    @Autowired
+    public UserController(UserService userService){
+        this.userService = userService;
+
+    }
+
+    @GetMapping("/list")
+    public String listUser(Model theModel) {
+        List<User> listUser = userService.getAllUser();
+        theModel.addAttribute("listUser", listUser);
+        return "user-list";
+    }
+
+    @GetMapping("/delete")
+    public String deleteUser(@RequestParam("id") int id) {
+        userService.deleteUser(id);
+        return "redirect:/user/list";
+    }
+
+    @GetMapping("/update")
+    public String updateUser(@RequestParam("id") int id, Model theModel) {
+        Optional<User> updateUser = userService.getUser(id);
+        theModel.addAttribute("user", updateUser);
+        return "user-list";
+    }
+
+
+    @PostMapping("/insert")
+    public String insertUser(@ModelAttribute("insert") User user) {
+        userService.saveUser(user);
+        return "redirect:/user/list";
+    }
+
+
+}
+
+
+
 
 
 //import java.io.IOException;
@@ -124,62 +184,3 @@ package com.usermanagement.controller;
 //
 //
 //}
-
-
-
-import java.util.List;
-
-import com.usermanagement.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import com.usermanagement.service.UserService;
-
-
-@Controller
-@RequestMapping("/")
-public class  UserController {
-
-    private UserService userService;
-
-    @Autowired
-    public UserController(UserService userService){
-        this.userService = userService;
-
-    }
-
-    @GetMapping("/list")
-    public String listUser(Model theModel) {
-        List<User> listUser = userService.getAllUser();
-        theModel.addAttribute("listUser", listUser);
-        return "user-list";
-    }
-
-    @GetMapping("/delete")
-    public String deleteUser(@RequestParam("id") int id) {
-        userService.deleteUser(id);
-        return "redirect:/user/list";
-    }
-
-    @GetMapping("/update")
-    public String updateUser(@RequestParam("id") int id, Model theModel) {
-        User updateUser = userService.getUser(id);
-        theModel.addAttribute("user", updateUser);
-        return "user-list";
-    }
-
-
-    @PostMapping("/insert")
-    public String insertUser(@ModelAttribute("insert") User user) {
-        userService.saveUser(user);
-        return "redirect:/user/list";
-    }
-
-
-}
