@@ -9,6 +9,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 //import org.springframework.orm.hibernate4.HibernateTransactionManager;
 //import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -22,9 +23,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
 @EnableTransactionManagement
-//@ComponentScan({"com.usermanagement.config"})
-@PropertySources({@PropertySource("classpath:database.properties")})
-
+@PropertySource("classpath:database.properties")
 @ComponentScan({"com.usermanagement"})
 @EnableJpaRepositories(basePackages = "com.usermanagement.repository")
 
@@ -35,7 +34,6 @@ public class HibernateConfiguration {
 
     public HibernateConfiguration() {
     }
-
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
@@ -61,6 +59,16 @@ public class HibernateConfiguration {
     }
 
     @Bean
+    public DataSource dataSource() {
+        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName(env.getProperty("jdbc.driverClassName"));
+        dataSource.setUrl(env.getProperty("jdbc.url"));
+        dataSource.setUsername(env.getProperty("jdbc.username"));
+        dataSource.setPassword(env.getProperty("jdbc.password"));
+        return dataSource;
+    }
+
+    @Bean
     public PlatformTransactionManager transactionManager(final EntityManagerFactory emf) {
         final JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(emf);
@@ -72,17 +80,49 @@ public class HibernateConfiguration {
         return new PersistenceExceptionTranslationPostProcessor();
     }
 
-    @Bean
-    public DataSource dataSource() {
-        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(env.getProperty("jdbc.driverClassName"));
-        dataSource.setUrl(env.getProperty("jdbc.url"));
-        dataSource.setUsername(env.getProperty("jdbc.username"));
-        dataSource.setPassword(env.getProperty("jdbc.password"));
-        return dataSource;
-    }
 }
 
+
+
+
+//    @Bean(name = "entityManagerFactory")
+//    public LocalContainerEntityManagerFactoryBean getEntityManagerFactoryBean() {
+//        LocalContainerEntityManagerFactoryBean lcemfb = new LocalContainerEntityManagerFactoryBean();
+//        lcemfb.setJpaVendorAdapter(getJpaVendorAdapter());
+//        lcemfb.setDataSource(dataSource());
+//        lcemfb.setPersistenceUnitName("myJpaPersistenceUnit");
+//        lcemfb.setPackagesToScan("com.usermanagement");
+//        lcemfb.setJpaProperties(hibernateProperties());
+//        return lcemfb;
+//    }
+//
+//    @Bean
+//    public JpaVendorAdapter getJpaVendorAdapter() {
+//        JpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+//        return adapter;
+//    }
+//
+//    @Bean(name = "transactionManager")
+//    public PlatformTransactionManager txManager() {
+//        JpaTransactionManager jpaTransactionManager = new JpaTransactionManager(
+//                getEntityManagerFactoryBean().getObject());
+//        return jpaTransactionManager;
+//    }
+
+
+//
+//
+//    @Bean
+//    public PlatformTransactionManager transactionManager(final EntityManagerFactory emf) {
+//        final JpaTransactionManager transactionManager = new JpaTransactionManager();
+//        transactionManager.setEntityManagerFactory(emf);
+//        return transactionManager;
+//    }
+//
+//    @Bean
+//    public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
+//        return new PersistenceExceptionTranslationPostProcessor();
+//    }
 
 
 //    @Bean
@@ -93,9 +133,6 @@ public class HibernateConfiguration {
 //        sessionFactory.setHibernateProperties(hibernateProperties());
 //        return sessionFactory;
 //    }
-
-
-
 
 
 //    @Bean
